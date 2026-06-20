@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ARTICLE_TITLE}} | THE NATION EXPRESS</title>
+    <style>
+        :root {
+            --ie-black: #0f172a;
+            --ie-border: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --max-width: 740px;
+            --font-serif: 'Times New Roman', Times, Georgia, serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --accent: #dc2626;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #ffffff; color: var(--text-dark); font-family: var(--font-sans); line-height: 1.6; padding-bottom: 80px; -webkit-font-smoothing: antialiased; }
+        header { border-bottom: 1px solid var(--ie-border); background: #ffffff; padding: 16px 20px; margin-bottom: 40px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02); }
+        .header-wrap { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; }
+        .back-link { text-decoration: none; color: var(--accent); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px; }
+        .article-canvas { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; }
+        .art-cat { color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 16px; }
+        .art-title { font-family: var(--font-serif); font-size: 44px; font-weight: 800; line-height: 1.15; color: #000000; margin-bottom: 20px; letter-spacing: -0.5px; }
+        .art-subtitle { font-size: 19px; line-height: 1.5; color: #475569; margin-bottom: 28px; }
+        .art-meta { border-top: 1px solid var(--ie-border); border-bottom: 1px solid var(--ie-border); padding: 14px 0; margin-bottom: 36px; font-size: 12px; text-transform: uppercase; font-weight: 600; color: var(--text-muted); display: flex; flex-wrap: wrap; gap: 8px 16px; }
+        .art-meta strong { color: var(--text-dark); }
+        .meta-divider { color: var(--ie-border); }
+        .art-hero-box { width: 100%; border-radius: 8px; overflow: hidden; margin-bottom: 36px; background: #f1f5f9; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
+        .art-hero-img { width: 100%; max-height: 500px; object-fit: cover; display: block; }
+        .art-body p { font-family: var(--font-serif); font-size: 19px; line-height: 1.75; color: #111111; margin-bottom: 26px; word-break: break-word; }
+        .art-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--ie-border); }
+        .tag-node { background: #f1f5f9; color: #475569; padding: 5px 14px; font-size: 12px; font-weight: 600; text-decoration: none; border-radius: 4px; transition: all 0.2s; }
+        .tag-node:hover { background: var(--ie-black); color: #ffffff; }
+
+        @media (max-width: 600px) {
+            header { margin-bottom: 24px; }
+            .art-title { font-size: 32px; margin-bottom: 16px; }
+            .art-subtitle { font-size: 17px; margin-bottom: 20px; }
+            .art-meta { flex-direction: column; gap: 6px; padding: 12px 0; margin-bottom: 24px; }
+            .meta-divider { display: none; }
+            .art-body p { font-size: 18px; line-height: 1.65; margin-bottom: 20px; }
+            .art-hero-box { border-radius: 0; margin-left: -20px; width: calc(100% + 40px); margin-bottom: 24px; }
+            .art-hero-img { max-height: 320px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-wrap">
+            <a href="index.html" class="back-link"><span>&#11013;</span> Back to Latest Headlines</a>
+        </div>
+    </header>
+
+    <main class="article-canvas">
+        <div class="art-cat">{{ARTICLE_CATEGORY}}</div>
+        <h1 class="art-title">{{ARTICLE_TITLE}}</h1>
+        <p class="art-subtitle">{{ARTICLE_SUBTITLE}}</p>
+        <div class="art-meta">
+            <div>By <strong>{{ARTICLE_AUTHOR}}</strong></div>
+            <div class="meta-divider">|</div>
+            <div>Published: <strong>{{ARTICLE_DATE}}</strong></div>
+        </div>
+        <div class="art-hero-box">
+            <img class="art-hero-img" src="{{ARTICLE_IMAGE}}" alt="News Headline Graphic View">
+        </div>
+        <article class="art-body">{{ARTICLE_BODY}}</article>
+        <div class="art-tags">{{ARTICLE_TAGS}}</div>
+    </main>
+</body>
+</html>
