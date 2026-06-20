@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NX Convert</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #16a34a;
+            --bg: #0f172a;
+            --panel: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .admin-panel {
+            background-color: var(--panel);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            max-width: 550px;
+            width: 100%;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        h2 { margin: 0 0 10px 0; font-size: 24px; }
+        p.subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 25px; }
+
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--primary);
+        }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            width: 100%;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        #status {
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: none;
+            text-align: left;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="admin-panel">
+    <h2>Admin Dashboard</h2>
+    <p class="subtitle">Bypasses proxy servers to copy live spreadsheet mutations directly to your clipboard.</p>
+    
+    <div class="input-group">
+        <label for="sheetUrl">Google Sheets Link</label>
+        <input type="text" id="sheetUrl" value="https://docs.google.com/spreadsheets/d/1-Fh5G9awYLTSCm390nQC4lHfR9faf1l82gln11JfOtM/edit?gid=0#gid=0">
+    </div>
+
+    <button id="convertBtn">🔄 Fetch Live & Copy JSON</button>
+    
+    <div id="status"></div>
+</div>
+
+<script>
+document.getElementById('convertBtn').addEventListener('click', function() {
+    const urlInput = document.getElementById('sheetUrl').value.trim();
+    const statusDiv = document.getElementById('status');
+
+    if (!urlInput) {
+        showStatus("Please paste your Google Sheet link first.", "error");
+        return;
+    }
+
+    showStatus("Querying Google Data Engine directly...", "loading");
+
+    const matches = urlInput.match(/\/d\/([a-zA-Z0-9-_]+)/);
+    if (!matches || !matches[1]) {
+        showStatus("Invalid URL layout. Paste your standard Google Sheet address line.", "error");
+        return;
+    }
+    const sheetId = matches[1];
+
+    const oldScript = document.getElementById('googleJsonpBridge');
+    if (oldScript) oldScript.remove();
+
+    const script = document.createElement('script');
+    script.id = 'googleJsonpBridge';
+    script.src = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=responseHandler:processGoogleLiveStream&tq=&nocache=${new Date().getTime()}`;
+
+    script.onerror = function() {
+        showStatus("Google cloud engine rejected connection request.", "error");
+    };
+
+    document.body.appendChild(script);
+});
+
+// Helper function to format the Date(Y,M,D) string into DD-MM-YYYY
+function formatDateString(rawVal) {
+    if (!rawVal) return "";
+    
+    const dateMatch = rawVal.match(/Date\((\d+),(\d+),(\d+)\)/);
+    if (dateMatch) {
+        const year = dateMatch[1];
+        const month = String(parseInt(dateMatch[2]) + 1).padStart(2, '0');
+        const day = String(dateMatch[3]).padStart(2, '0');
+        
+        return `${day}-${month}-${year}`;
+    }
+    
+    return rawVal;
+}
+
+// Fallback helper to generate a URL slug if Column J is completely empty
+function generateSlugFromTitle(title) {
+    if (!title) return "untitled-story-" + Math.floor(Math.random() * 1000);
+    return title.toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '')
+        .replace(/\s+/g, '-')
+        .replace(/-+/g, '-');
+}
+
+window.processGoogleLiveStream = async function(response) {
+    try {
+        if (!response || !response.table || !response.table.rows) {
+            throw new Error("Empty spreadsheet layout returned.");
+        }
+
+        const rows = response.table.rows;
+        
+        const convertedData = rows.map(item => {
+            const cells = item.c;
+            if (!cells || cells.length === 0) return null;
+
+            const getValue = (idx) => (cells[idx] && cells[idx].v !== null) ? String(cells[idx].v) : "";
+
+            // If row 1 is just column headers, skip processing it as an article row
+            const titleText = getValue(1).trim();
+            if (titleText.toLowerCase() === "title") return null;
+            if (titleText === "") return null; // Skip blank rows completely
+
+            // Column I (Index 8) - Trending flag parsing
+            const rawTrending = getValue(8).toLowerCase().trim();
+            const isTrending = (rawTrending === "true" || rawTrending === "yes" || rawTrending === "1");
+
+            // Column J (Index 9) - Extracted as clean SEO URL Slug (with fallback generator)
+            let slugVal = getValue(9).trim();
+            if (!slugVal) {
+                slugVal = generateSlugFromTitle(titleText);
+            }
+
+            // Column K (Index 10) - Author name metadata
+            const authorVal = getValue(10).trim() || "Express Network";
+
+            // Read columns L to U (Indices 11 to 20) for para1 to para10 blocks
+            const paragraphs = [];
+            for (let i = 11; i < 21; i++) {
+                let val = getValue(i).trim();
+                if (val !== "") {
+                    paragraphs.push(val);
+                }
+            }
+
+            const kwRaw = getValue(7);
+            const keywordsArray = kwRaw ? kwRaw.split(',').map(k => k.trim()).filter(k => k !== "") : [];
+            const cleanDate = formatDateString(getValue(4));
+
+            return {
+                id: getValue(0) || "a",
+                title: titleText,
+                subtitle: getValue(2),
+                category: getValue(3),
+                data: cleanDate,
+                imgLink: getValue(5),
+                summary: getValue(6),
+                keywords: keywordsArray,
+                trending: isTrending,
+                slug: slugVal,
+                author: authorVal,
+                paragraphs: paragraphs
+            };
+        }).filter(item => item !== null);
+
+        const jsonResult = JSON.stringify(convertedData, null, 2);
+
+        // Copy directly to user clipboard memory
+        try {
+            await navigator.clipboard.writeText(jsonResult);
+            showStatus("📋 Success! Live JSON copied to clipboard. Paste this into your generator tool.", "success");
+        } catch (clipboardError) {
+            const textArea = document.createElement("textarea");
+            textArea.value = jsonResult;
+            textArea.style.position = "fixed"; 
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            showStatus("📋 Success! Live JSON copied to clipboard. Paste this into your generator tool.", "success");
+        }
+
+    } catch (e) {
+        showStatus(`Processing Fault: ${e.message}`, "error");
+        console.error(e);
+    }
+};
+
+function showStatus(msg, type) {
+    const statusDiv = document.getElementById('status');
+    statusDiv.style.display = "block";
+    statusDiv.innerText = msg;
+    if (type === "loading") {
+        statusDiv.style.background = "rgba(37, 99, 235, 0.1)";
+        statusDiv.style.color = "#60a5fa";
+    } else if (type === "success") {
+        statusDiv.style.background = "rgba(22, 163, 74, 0.1)";
+        statusDiv.style.color = "#4ade80";
+    } else {
+        statusDiv.style.background = "rgba(220, 38, 38, 0.1)";
+        statusDiv.style.color = "#f87171";
+    }
+}
+</script>
+
+</body>
+</html>
