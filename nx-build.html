@@ -168,11 +168,11 @@
             statusDiv.innerHTML = "Fetching secure external template frames... Please wait.";
 
             try {
-                const homeRes = await fetch('template-home.html');
-                const articleRes = await fetch('template-article.html');
+                const homeRes = await fetch('nx-home.html');
+                const articleRes = await fetch('nx-article.html');
                 
                 if (!homeRes.ok || !articleRes.ok) {
-                    throw new Error("Could not load template files. Ensure template-home.html and template-article.html are in the same folder.");
+                    throw new Error("Could not load template files. Ensure nx-home.html and nx-article.html are in the same folder.");
                 }
 
                 let homeRawTemplate = await homeRes.text();
