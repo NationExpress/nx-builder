@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THE NATION EXPRESS | News, Breaking News, Live Coverage</title>
+    <style>
+        :root {
+            --ie-black: #0f172a;
+            --ie-border: #e2e8f0;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --max-width: 1340px;
+            --font-serif: 'Times New Roman', Times, Georgia, serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --accent: #dc2626;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background-color: #ffffff; color: var(--text-dark); font-family: var(--font-sans); line-height: 1.5; }
+        header { border-bottom: 4px solid var(--ie-black); background: #fff; position: relative; z-index: 100; }
+        .top-bar { background: var(--ie-black); color: #fff; padding: 8px 20px; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; }
+        .brand-masthead { max-width: var(--max-width); margin: 0 auto; padding: 24px 20px 16px 20px; text-align: center; position: relative; }
+        .site-title { font-family: var(--font-serif); font-size: 52px; font-weight: 900; letter-spacing: -1.5px; color: #000000; text-transform: uppercase; text-decoration: none; display: inline-block; }
+        .site-title span { color: var(--accent); }
+        .page-navigation { display: flex; justify-content: center; gap: 24px; padding: 12px 0; border-bottom: 1px solid var(--ie-border); max-width: var(--max-width); margin: 0 auto; }
+        .page-link { text-decoration: none; color: var(--text-dark); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; transition: color 0.2s; }
+        .page-link:hover { color: var(--accent); }
+        .navigation-row { max-width: var(--max-width); margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+        .category-nav { display: flex; gap: 20px; overflow-x: auto; padding: 14px 0; scrollbar-width: none; }
+        .category-nav::-webkit-scrollbar { display: none; }
+        .nav-link { font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--ie-black); cursor: pointer; white-space: nowrap; padding-bottom: 4px; border-bottom: 2px solid transparent; }
+        .nav-link.active, .nav-link:hover { border-color: var(--accent); color: var(--accent); }
+        .search-container { position: relative; }
+        .search-input { border: 1px solid var(--ie-border); padding: 6px 12px 6px 32px; font-size: 13px; border-radius: 4px; outline: none; width: 220px; transition: all 0.2s; }
+        .search-input:focus { border-color: var(--text-dark); width: 260px; }
+        .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; color: var(--text-muted); }
+        .hamburger-toggle { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; padding: 10px; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); }
+        .hamburger-toggle span { display: block; width: 24px; height: 3px; background-color: var(--ie-black); border-radius: 2px; transition: transform 0.3s, opacity 0.3s; }
+        .hamburger-toggle.active span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+        .hamburger-toggle.active span:nth-child(2) { opacity: 0; }
+        .hamburger-toggle.active span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+        .newspaper-layout { max-width: var(--max-width); margin: 24px auto; padding: 0 20px; display: grid; grid-template-columns: 3fr 1fr; gap: 40px; }
+        .news-wire { display: flex; flex-direction: column; gap: 32px; }
+        .ie-card { display: flex; gap: 24px; padding-bottom: 28px; border-bottom: 1px solid var(--ie-border); text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s; -webkit-tap-highlight-color: transparent; user-select: none; }
+        .ie-card:hover { transform: translateY(-2px); }
+        .ie-card:active { transform: scale(0.98); background-color: #f8fafc; }
+        .ie-card:last-child { border-bottom: none; }
+        .ie-card-img-box { width: 280px; height: 180px; flex-shrink: 0; border-radius: 6px; overflow: hidden; background: #f1f5f9; }
+        .ie-card-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .ie-card:hover .ie-card-img { transform: scale(1.04); }
+        .ie-card-content { display: flex; flex-direction: column; }
+        .ie-tag { color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .ie-title { font-family: var(--font-serif); font-size: 26px; font-weight: 700; line-height: 1.25; color: #000000; margin-bottom: 10px; }
+        .ie-card:hover .ie-title { color: var(--accent); }
+        .ie-summary { font-size: 14px; color: #475569; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
+        .ie-meta { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-top: auto; line-height: 1.4; }
+        .ie-author { color: var(--text-dark); font-weight: 700; }
+        .sidebar-trending { border-left: 1px solid var(--ie-border); padding-left: 32px; }
+        .sidebar-heading { font-family: var(--font-sans); font-size: 14px; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--ie-black); padding-bottom: 6px; margin-bottom: 20px; letter-spacing: 0.5px; }
+        .trending-item { display: block; text-decoration: none; color: inherit; padding: 14px 0; border-bottom: 1px solid var(--ie-border); transition: transform 0.15s ease; -webkit-tap-highlight-color: transparent; }
+        .trending-item:hover .trending-title { color: var(--accent); }
+        .trending-item:active { transform: scale(0.97); }
+        .trending-title { font-family: var(--font-serif); font-size: 16px; font-weight: 700; line-height: 1.3; color: #000000; margin-bottom: 6px; }
+        .status-alert { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+        .mobile-only-cloned { display: none !important; }
+        .site-footer { text-align: center; padding: 24px 20px; background: #ffffff; margin-top: 60px; width: 100%; }
+        .footer-divider { color: #e2e8f0; font-size: 14px; letter-spacing: -1px; line-height: 1; user-select: none; }
+        .footer-copyright { font-size: 13px; font-weight: 600; color: #0f172a; margin: 8px 0 4px 0; }
+        .footer-links { font-size: 13px; color: #64748b; font-weight: 700; }
+        .footer-link { text-decoration: none; color: #1e293b; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; padding: 0 4px; transition: color 0.2s; }
+        .footer-link:hover { color: var(--accent); }
+
+        @media (max-width: 900px) {
+            .brand-masthead { padding: 16px 20px; text-align: left; }
+            .site-title { font-size: 32px; }
+            .hamburger-toggle { display: flex; }
+            .mobile-only-cloned { display: block !important; }
+            .page-navigation { display: none; flex-direction: column; position: absolute; top: 100%; left: 0; width: 100%; background: #ffffff; border-bottom: 3px solid var(--ie-black); box-shadow: 0 10px 15px rgba(0,0,0,0.1); padding: 16px 20px; gap: 14px; z-index: 105; justify-content: flex-start; }
+            .page-navigation.mobile-open { display: flex; }
+            .navigation-row { flex-direction: column; align-items: stretch; gap: 12px; padding-bottom: 14px; }
+            .search-input { width: 100%; }
+            .search-input:focus { width: 100%; }
+            .newspaper-layout { display: flex; flex-direction: column; gap: 30px; }
+            .sidebar-trending { border-left: none; padding-left: 0; order: -1; margin-bottom: 10px; overflow: hidden; width: 100%; }
+            .sidebar-heading { margin-bottom: 12px; }
+            #trendingWire { display: flex; gap: 16px; padding-bottom: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+            #trendingWire::-webkit-scrollbar { display: none; }
+            .trending-item { flex: 0 0 260px; background: #f8fafc; padding: 14px; border: 1px solid var(--ie-border); border-radius: 8px; user-select: none; }
+            .trending-title { font-size: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+            .ie-card { flex-direction: column; gap: 16px; padding-bottom: 24px; }
+            .ie-card-img-box { width: 100%; height: 210px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="top-bar">
+            <div>Breaking News • Analysis • Reports</div>
+            <div id="liveClock">Digital Edition</div>
+        </div>
+        <div class="brand-masthead">
+            <a href="index.html" class="site-title">NATION<span>EXPRESS</span></a>
+            <button class="hamburger-toggle" id="menuToggle" aria-label="Toggle Menu System"><span></span><span></span><span></span></button>
+        </div>
+        <nav class="page-navigation" id="pageNav">
+            <a href="index.html" class="page-link">Home</a>
+            <a href="about.html" class="page-link">About Us</a>
+            <a href="contact.html" class="page-link">Contact Us</a>
+            <a href="privacy.html" class="page-link">Privacy Policy</a>
+        </nav>
+        <div class="navigation-row">
+            <nav class="category-nav" id="categoryNav">
+                <div class="nav-link active" data-category="All">Latest News</div>
+                {{CATEGORY_BUTTONS}}
+            </nav>
+            <div class="search-container">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="newsQuery" class="search-input" placeholder="Search articles...">
+            </div>
+        </div>
+    </header>
+
+    <main class="newspaper-layout">
+        <section class="news-wire" id="mainNewsWire">{{STORY_CARDS}}</section>
+        <aside class="sidebar-trending">
+            <h2 class="sidebar-heading">Trending Headlines</h2>
+            <div id="trendingWire">{{TRENDING_ITEMS}}{{TRENDING_CLONES}}</div>
+        </aside>
+    </main>
+    
+    <footer class="site-footer">
+        <div class="footer-divider">────────────────────────────</div>
+        <div class="footer-copyright">&copy; 2026 NationExpress</div>
+        <div class="footer-links">
+            <a href="about.html" class="footer-link">About Us</a> • 
+            <a href="contact.html" class="footer-link">Contact Us</a> • 
+            <a href="privacy.html" class="footer-link">Privacy Policy</a>
+        </div>
+        <div class="footer-divider">────────────────────────────</div>
+    </footer>
+    
+    <script>
+        let runningCategory = 'All';
+        let typedQueryExpression = '';
+        let scrollInterval = null;
+        let isUserInteracting = false;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById('liveClock').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const menuToggle = document.getElementById('menuToggle');
+            const pageNav = document.getElementById('pageNav');
+            
+            menuToggle.addEventListener('click', () => {
+                menuToggle.classList.toggle('active');
+                pageNav.classList.toggle('mobile-open');
+            });
+
+            document.querySelectorAll('.category-nav .nav-link').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-nav .nav-link').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    runningCategory = this.getAttribute('data-category');
+                    filterNewsFeed();
+                });
+            });
+
+            document.getElementById('newsQuery').addEventListener('input', (e) => {
+                typedQueryExpression = e.target.value.toLowerCase().trim();
+                filterNewsFeed();
+            });
+            
+            setupTrendingInteractionEngine();
+            startTrendingAutoScrollEngine();
+        });
+
+        function filterNewsFeed() {
+            let visibleCount = 0;
+            const cards = document.querySelectorAll('#mainNewsWire .ie-card');
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category');
+                const title = card.getAttribute('data-title');
+                const subtitle = card.getAttribute('data-subtitle');
+                const keywords = card.getAttribute('data-keywords');
+                const matchesCategory = (runningCategory === 'All' || cardCat === runningCategory);
+                const matchesSearch = !typedQueryExpression || title.includes(typedQueryExpression) || subtitle.includes(typedQueryExpression) || keywords.includes(typedQueryExpression);
+
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'flex';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            const alertBox = document.getElementById('noResultsAlert');
+            if (visibleCount === 0) {
+                if(!alertBox) {
+                    const alertEl = document.createElement('div');
+                    alertEl.id = 'noResultsAlert';
+                    alertEl.className = 'status-alert';
+                    alertEl.innerText = 'No matching records available in active columns.';
+                    document.getElementById('mainNewsWire').appendChild(alertEl);
+                }
+            } else if (alertBox) {
+                alertBox.remove();
+            }
+        }
+
+        function startTrendingAutoScrollEngine() {
+            clearInterval(scrollInterval);
+            const container = document.getElementById('trendingWire');
+            if (!container) return;
+            scrollInterval = setInterval(() => {
+                if (container.scrollLeft >= (container.scrollWidth / 2)) container.scrollLeft = 0;
+                if (isUserInteracting || window.innerWidth > 900) return;
+                container.scrollLeft += 1; 
+            }, 30); 
+        }
+
+        function setupTrendingInteractionEngine() {
+            const container = document.getElementById('trendingWire');
+            if (!container) return;
+            const startScroll = () => { isUserInteracting = false; };
+            const stopScroll = () => { isUserInteracting = true; };
+            container.addEventListener('touchstart', stopScroll, { passive: true });
+            container.addEventListener('touchend', startScroll, { passive: true });
+            container.addEventListener('mousedown', stopScroll);
+            container.addEventListener('mouseup', startScroll);
+            container.addEventListener('mouseenter', stopScroll);
+            container.addEventListener('mouseleave', startScroll);
+        }
+    </script>
+</body>
+</html>
