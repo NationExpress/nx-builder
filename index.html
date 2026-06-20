@@ -3,315 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>THE NATION EXPRESS | Internal Production Workspace</title>
+    <title>Workspace Link Manager</title>
     <style>
-        :root {
-            --ie-black: #0f172a;
-            --ie-border: #e2e8f0;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --max-width: 1340px;
-            --font-serif: 'Times New Roman', Times, Georgia, serif;
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            --accent: #dc2626;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
-            background-color: #ffffff;
-            color: var(--text-dark);
-            font-family: var(--font-sans);
-            line-height: 1.5;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            margin: 0;
+            padding: 40px 20px;
         }
 
-        /* NEWSPRINT HEADER LAYOUT */
-        header {
-            border-bottom: 4px solid var(--ie-black);
-            background: #fff;
-            position: relative;
-            z-index: 100;
-        }
-
-        .top-bar {
-            background: var(--ie-black);
-            color: #fff;
-            padding: 8px 20px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* LOGO CENTERED FOR PC VIEW */
-        .brand-masthead {
-            max-width: var(--max-width);
+        .container {
+            max-width: 650px;
             margin: 0 auto;
-            padding: 24px 20px 16px 20px;
-            text-align: center;
-            position: relative;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
 
-        .site-title {
-            font-family: var(--font-serif);
-            font-size: 52px;
-            font-weight: 900;
-            letter-spacing: -1.5px;
-            color: #000000;
-            text-transform: uppercase;
-            text-decoration: none;
-            display: inline-block;
+        h1 {
+            font-size: 20px;
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #0f172a;
         }
 
-        .site-title span {
-            color: var(--accent);
+        p {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 25px;
         }
 
-        /* SYSTEM SUB-HEADER BAR */
-        .workspace-banner {
-            max-width: var(--max-width);
-            margin: 0 auto;
-            padding: 12px 20px;
-            border-bottom: 1px solid var(--ie-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 13px;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-        .user-pill {
-            background: #f1f5f9;
-            color: var(--ie-black);
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 11px;
-            font-weight: 700;
+        .section-title {
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            color: #94a3b8;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
-        /* GRID MAIN ENGINE LAYOUT */
-        .newspaper-layout {
-            max-width: var(--max-width);
-            margin: 32px auto;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 3fr 1fr;
-            gap: 40px;
-        }
-
-        .news-wire {
+        .link-grid {
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 10px;
+            margin-bottom: 25px;
         }
 
-        .section-heading {
-            font-family: var(--font-sans);
-            font-size: 14px;
-            font-weight: 800;
-            text-transform: uppercase;
-            border-bottom: 3px solid var(--ie-black);
-            padding-bottom: 6px;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        /* CARD ELEMENTS SYSTEM AS UTILITY LINKS */
-        .ie-card {
-            display: flex;
-            gap: 24px;
-            padding-bottom: 28px;
-            border-bottom: 1px solid var(--ie-border);
-            text-decoration: none;
-            color: inherit;
-            cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.2s;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .ie-card:hover { transform: translateY(-2px); }
-        .ie-card:active {
-            transform: scale(0.98);
-            background-color: #f8fafc;
-        }
-        .ie-card:last-child { border-bottom: none; }
-
-        .ie-card-img-box {
-            width: 280px;
-            height: 180px;
-            flex-shrink: 0;
-            border-radius: 6px;
-            overflow: hidden;
-            background: #f1f5f9;
+        .link-button {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 42px;
-            border: 1px solid var(--ie-border);
-        }
-        
-        .ie-card-content { display: flex; flex-direction: column; justify-content: center; }
-        .ie-tag { color: var(--accent); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-        
-        .ie-title {
-            font-family: var(--font-serif);
-            font-size: 26px;
-            font-weight: 700;
-            line-height: 1.25;
-            color: #000000;
-            margin-bottom: 10px;
-        }
-        .ie-card:hover .ie-title { color: var(--accent); }
-
-        .ie-summary {
-            font-size: 14px;
-            color: #475569;
-            line-height: 1.5;
-            margin-bottom: 12px;
-        }
-
-        .ie-meta {
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-top: auto;
-            line-height: 1.4;
-        }
-
-        /* SIDEBAR WIRE LIST */
-        .sidebar-trending {
-            border-left: 1px solid var(--ie-border);
-            padding-left: 32px;
-        }
-
-        .trending-item {
-            display: block;
+            justify-content: space-between;
+            padding: 14px 18px;
+            background: #f1f5f9;
+            color: #1e293b;
             text-decoration: none;
-            color: inherit;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--ie-border);
-            transition: transform 0.15s ease;
-        }
-        .trending-item:hover .trending-title { color: var(--accent); }
-        .trending-item:active { transform: scale(0.97); }
-        .trending-title { font-family: var(--font-serif); font-size: 16px; font-weight: 700; line-height: 1.3; color: #000000; margin-bottom: 6px; }
-
-        /* COMPACT LINEAR FOOTER CSS */
-        .site-footer {
-            text-align: center;
-            padding: 24px 20px;
-            background: #ffffff;
-            margin-top: 60px;
-            width: 100%;
-        }
-        .footer-divider {
-            color: #e2e8f0;
-            font-size: 14px;
-            letter-spacing: -1px;
-            line-height: 1;
-            user-select: none;
-        }
-        .footer-copyright {
-            font-size: 13px;
-            font-weight: 600;
-            color: #0f172a;
-            margin: 8px 0 4px 0;
+            border-radius: 6px;
+            font-weight: 500;
+            font-size: 15px;
+            transition: background 0.15s ease;
         }
 
-        @media (max-width: 900px) {
-            .brand-masthead { padding: 16px 20px; text-align: left; }
-            .site-title { font-size: 32px; }
-            .newspaper-layout { display: flex; flex-direction: column; gap: 40px; }
-            .sidebar-trending { border-left: none; padding-left: 0; }
-            .ie-card { flex-direction: column; gap: 16px; padding-bottom: 24px; }
-            .ie-card-img-box { width: 100%; height: 160px; }
+        .link-button:hover {
+            background: #e2e8f0;
+        }
+
+        .url-text {
+            font-family: monospace;
+            font-size: 12px;
+            color: #64748b;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="top-bar">
-            <div>Production Channel • Secure Node Access</div>
-            <div id="liveClock">Digital Edition</div>
+    <div class="container">
+        <h1>Workspace Shortcuts</h1>
+        <p>Quick access links for the development team.</p>
+
+        <div class="section-title">Core Utilities</div>
+        <div class="link-grid">
+            <a href="https://nationexpress.github.io/nx-builder/nx-convert" target="_blank" class="link-button">
+                <span>JSON Converter</span>
+                <span class="url-text">/nx-convert</span>
+            </a>
+            <a href="https://nationexpress.github.io/nx-builder/nx-build" target="_blank" class="link-button">
+                <span>Builder Engine</span>
+                <span class="url-text">/nx-build</span>
+            </a>
         </div>
-        
-        <div class="brand-masthead">
-            <a href="#" class="site-title">NATION<span>WORKSPACE</span></a>
+
+        <div class="section-title">Templates</div>
+        <div class="link-grid">
+            <a href="https://nationexpress.github.io/nx-builder/nx-article" target="_blank" class="link-button">
+                <span>Article Template</span>
+                <span class="url-text">/nx-article</span>
+            </a>
+            <a href="https://nationexpress.github.io/nx-builder/nx-home" target="_blank" class="link-button">
+                <span>Homepage Template</span>
+                <span class="url-text">/nx-home</span>
+            </a>
         </div>
 
-        <div class="workspace-banner">
-            <div>Active Session Context: Content Development & Distribution</div>
-            <div class="user-pill">Dual-User Mode Enabled</div>
+        <div class="section-title">Data Store</div>
+        <div class="link-grid">
+            <a href="https://nationexpress.github.io/nx-builder/nx-data.json" target="_blank" class="link-button">
+                <span>nx-data.json</span>
+                <span class="url-text">/nx-data.json</span>
+            </a>
         </div>
-    </header>
+    </div>
 
-    <main class="newspaper-layout">
-        <section class="news-wire">
-            <h2 class="section-heading">Core Generation Utilities</h2>
-
-            <a class="ie-card" href="https://nationexpress.github.io/nx-builder/nx-convert" target="_blank">
-                <div class="ie-card-img-box">⚙️</div>
-                <div class="ie-card-content">
-                    <span class="ie-tag">Data Processor</span>
-                    <h3 class="ie-title">JSON Formatter & Schema Converter Engine</h3>
-                    <p class="ie-summary">Sanitize structural data arrays, normalize content values, and finalize payload blocks before committing directly to live compilation streams.</p>
-                    <div class="ie-meta">Routing Key &bull; <span style="color:var(--text-dark);">/nx-convert</span></div>
-                </div>
-            </a>
-
-            <a class="ie-card" href="https://nationexpress.github.io/nx-builder/nx-build" target="_blank">
-                <div class="ie-card-img-box">📦</div>
-                <div class="ie-card-content">
-                    <span class="ie-tag">Deployment Manager</span>
-                    <h3 class="ie-title">Package Compiler & Sitemap Assembly Engine</h3>
-                    <p class="ie-summary">Inject verified raw records layout structure, isolate specific directories, construct complete sitemap indexation arrays, and bundle final deployment ZIP units.</p>
-                    <div class="ie-meta">Routing Key &bull; <span style="color:var(--text-dark);">/nx-build</span></div>
-                </div>
-            </a>
-        </section>
-
-        <aside class="sidebar-trending">
-            <h2 class="sidebar-heading">Template Frame Nodes</h2>
-            
-            <a class="trending-item" href="https://nationexpress.github.io/nx-builder/nx-article" target="_blank">
-                <span class="ie-tag">Layout Model A</span>
-                <h4 class="trending-title">Article Blueprint Configuration File</h4>
-            </a>
-
-            <a class="trending-item" href="https://nationexpress.github.io/nx-builder/nx-home" target="_blank">
-                <span class="ie-tag">Layout Model B</span>
-                <h4 class="trending-title">Index Portal Core Framework File</h4>
-            </a>
-
-            <h2 class="sidebar-heading" style="margin-top: 32px;">Active Datastore</h2>
-            
-            <a class="trending-item" href="https://nationexpress.github.io/nx-builder/nx-data.json" target="_blank">
-                <span class="ie-tag">System Database Source</span>
-                <h4 class="trending-title">nx-data.json Payload Matrix</h4>
-            </a>
-        </aside>
-    </main>
-    
-    <footer class="site-footer">
-        <div class="footer-divider">────────────────────────────</div>
-        <div class="footer-copyright">&copy; 2026 NationExpress Workflow Terminal</div>
-        <div class="footer-divider">────────────────────────────</div>
-    </footer>
-    
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('liveClock').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-        });
-    </script>
 </body>
 </html>
