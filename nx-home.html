@@ -55,12 +55,18 @@
         .ie-summary { font-size: 14px; color: #475569; line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: 12px; }
         .ie-meta { font-size: 11px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-top: auto; line-height: 1.4; }
         .ie-author { color: var(--text-dark); font-weight: 700; }
+        
+        /* Desktop Trending Styles */
         .sidebar-trending { border-left: 1px solid var(--ie-border); padding-left: 32px; }
         .sidebar-heading { font-family: var(--font-sans); font-size: 14px; font-weight: 800; text-transform: uppercase; border-bottom: 3px solid var(--ie-black); padding-bottom: 6px; margin-bottom: 20px; letter-spacing: 0.5px; }
         .trending-item { display: block; text-decoration: none; color: inherit; padding: 14px 0; border-bottom: 1px solid var(--ie-border); transition: transform 0.15s ease; -webkit-tap-highlight-color: transparent; }
         .trending-item:hover .trending-title { color: var(--accent); }
         .trending-item:active { transform: scale(0.97); }
         .trending-title { font-family: var(--font-serif); font-size: 16px; font-weight: 700; line-height: 1.3; color: #000000; margin-bottom: 6px; }
+        
+        /* FIX 1: Hide dynamic loop clones on Desktop View entirely */
+        .js-cloned-item { display: none !important; }
+
         .status-alert { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
         .mobile-only-cloned { display: none !important; }
         .site-footer { text-align: center; padding: 24px 20px; background: #ffffff; margin-top: 60px; width: 100%; }
@@ -85,6 +91,10 @@
             .sidebar-heading { margin-bottom: 12px; }
             #trendingWire { display: flex; gap: 16px; padding-bottom: 12px; overflow-x: auto; scroll-snap-type: x proximity; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
             #trendingWire::-webkit-scrollbar { display: none; }
+            
+            /* FIX 2: Allow dynamic loop clones to display normally on mobile view */
+            .js-cloned-item { display: block !important; flex: 0 0 260px; background: #f8fafc; padding: 14px; border: 1px solid var(--ie-border); border-radius: 8px; user-select: none; }
+            
             .trending-item { flex: 0 0 260px; background: #f8fafc; padding: 14px; border: 1px solid var(--ie-border); border-radius: 8px; user-select: none; }
             .trending-title { font-size: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
             .ie-card { flex-direction: column; gap: 16px; padding-bottom: 24px; }
@@ -142,12 +152,8 @@
     <script>
         let runningCategory = 'All';
         let typedQueryExpression = '';
-        let scrollIn<script>
-        let runningCategory = 'All';
-        let typedQueryExpression = '';
         let scrollInterval = null;
         let isUserInteracting = false;
-        let clonesCreated = false; // Tracks if clones currently exist
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('liveClock').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -173,40 +179,21 @@
                 filterNewsFeed();
             });
             
-            // Initialize responsive trending wire layout
-            handleTrendingClonesResponsive();
+            setupDynamicClones();
             setupTrendingInteractionEngine();
             startTrendingAutoScrollEngine();
-
-            // Listen for screen resize adjustments dynamically
-            window.addEventListener('resize', handleTrendingClonesResponsive);
         });
 
-        // Dynamic clone handling based on viewport width
-        function handleTrendingClonesResponsive() {
+        function setupDynamicClones() {
             const container = document.getElementById('trendingWire');
             if (!container) return;
-
-            if (window.innerWidth <= 900) {
-                // If on mobile and clones aren't made yet, create them
-                if (!clonesCreated) {
-                    const originalItems = Array.from(container.children);
-                    originalItems.forEach(item => {
-                        const clone = item.cloneNode(true);
-                        clone.classList.add('js-cloned-item'); 
-                        container.appendChild(clone);
-                    });
-                    clonesCreated = true;
-                }
-            } else {
-                // If on desktop, strip away any generated clones instantly
-                if (clonesCreated) {
-                    const clones = container.querySelectorAll('.js-cloned-item');
-                    clones.forEach(clone => clone.remove());
-                    clonesCreated = false;
-                    container.scrollLeft = 0; // Reset scroll position
-                }
-            }
+            
+            const originalItems = Array.from(container.children);
+            originalItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                clone.classList.add('js-cloned-item'); 
+                container.appendChild(clone);
+            });
         }
 
         function filterNewsFeed() {
@@ -247,8 +234,7 @@
             const container = document.getElementById('trendingWire');
             if (!container) return;
             scrollInterval = setInterval(() => {
-                if (window.innerWidth > 900) return; // Prevent scrolling behavior entirely on desktop
-                
+                if (window.innerWidth > 900) return;
                 if (container.scrollLeft >= (container.scrollWidth / 2)) {
                     container.scrollLeft = 0;
                 }
