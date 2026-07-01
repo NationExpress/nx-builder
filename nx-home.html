@@ -142,8 +142,12 @@
     <script>
         let runningCategory = 'All';
         let typedQueryExpression = '';
+        let scrollIn<script>
+        let runningCategory = 'All';
+        let typedQueryExpression = '';
         let scrollInterval = null;
         let isUserInteracting = false;
+        let clonesCreated = false; // Tracks if clones currently exist
 
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById('liveClock').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -169,24 +173,40 @@
                 filterNewsFeed();
             });
             
-            // Setup dynamic clean cloning first, then initiate engines
-            setupDynamicClones();
+            // Initialize responsive trending wire layout
+            handleTrendingClonesResponsive();
             setupTrendingInteractionEngine();
             startTrendingAutoScrollEngine();
+
+            // Listen for screen resize adjustments dynamically
+            window.addEventListener('resize', handleTrendingClonesResponsive);
         });
 
-        // NEW: Safely clones elements in the client browser without changing tags/IDs
-        function setupDynamicClones() {
+        // Dynamic clone handling based on viewport width
+        function handleTrendingClonesResponsive() {
             const container = document.getElementById('trendingWire');
             if (!container) return;
-            
-            const originalItems = Array.from(container.children);
-            originalItems.forEach(item => {
-                const clone = item.cloneNode(true);
-                // Ensure no visual styling configurations flag it mistakenly
-                clone.classList.add('js-cloned-item'); 
-                container.appendChild(clone);
-            });
+
+            if (window.innerWidth <= 900) {
+                // If on mobile and clones aren't made yet, create them
+                if (!clonesCreated) {
+                    const originalItems = Array.from(container.children);
+                    originalItems.forEach(item => {
+                        const clone = item.cloneNode(true);
+                        clone.classList.add('js-cloned-item'); 
+                        container.appendChild(clone);
+                    });
+                    clonesCreated = true;
+                }
+            } else {
+                // If on desktop, strip away any generated clones instantly
+                if (clonesCreated) {
+                    const clones = container.querySelectorAll('.js-cloned-item');
+                    clones.forEach(clone => clone.remove());
+                    clonesCreated = false;
+                    container.scrollLeft = 0; // Reset scroll position
+                }
+            }
         }
 
         function filterNewsFeed() {
@@ -227,11 +247,12 @@
             const container = document.getElementById('trendingWire');
             if (!container) return;
             scrollInterval = setInterval(() => {
-                // Safely checks midpoint of your modern horizontal scroll flex setup
+                if (window.innerWidth > 900) return; // Prevent scrolling behavior entirely on desktop
+                
                 if (container.scrollLeft >= (container.scrollWidth / 2)) {
                     container.scrollLeft = 0;
                 }
-                if (isUserInteracting || window.innerWidth > 900) return;
+                if (isUserInteracting) return;
                 container.scrollLeft += 1; 
             }, 30); 
         }
