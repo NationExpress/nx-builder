@@ -124,7 +124,7 @@
         <section class="news-wire" id="mainNewsWire">{{STORY_CARDS}}</section>
         <aside class="sidebar-trending">
             <h2 class="sidebar-heading">Trending Headlines</h2>
-            <div id="trendingWire">{{TRENDING_ITEMS}}{{TRENDING_CLONES}}</div>
+            <div id="trendingWire">{{TRENDING_ITEMS}}</div>
         </aside>
     </main>
     
@@ -169,9 +169,25 @@
                 filterNewsFeed();
             });
             
+            // Setup dynamic clean cloning first, then initiate engines
+            setupDynamicClones();
             setupTrendingInteractionEngine();
             startTrendingAutoScrollEngine();
         });
+
+        // NEW: Safely clones elements in the client browser without changing tags/IDs
+        function setupDynamicClones() {
+            const container = document.getElementById('trendingWire');
+            if (!container) return;
+            
+            const originalItems = Array.from(container.children);
+            originalItems.forEach(item => {
+                const clone = item.cloneNode(true);
+                // Ensure no visual styling configurations flag it mistakenly
+                clone.classList.add('js-cloned-item'); 
+                container.appendChild(clone);
+            });
+        }
 
         function filterNewsFeed() {
             let visibleCount = 0;
@@ -211,7 +227,10 @@
             const container = document.getElementById('trendingWire');
             if (!container) return;
             scrollInterval = setInterval(() => {
-                if (container.scrollLeft >= (container.scrollWidth / 2)) container.scrollLeft = 0;
+                // Safely checks midpoint of your modern horizontal scroll flex setup
+                if (container.scrollLeft >= (container.scrollWidth / 2)) {
+                    container.scrollLeft = 0;
+                }
                 if (isUserInteracting || window.innerWidth > 900) return;
                 container.scrollLeft += 1; 
             }, 30); 
